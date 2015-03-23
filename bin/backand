@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+process.bin = process.title = 'backand';
+
+"use strict";
+var fs          = require('fs-extra');
+var colors      = require('colors');
+var logger      = require('../lib/logger');
+var commands    = require('../lib/commands/commands');
+var command     = process.argv[2];
+var ROOT        = __dirname + '/..';
+var backandVersion = fs.readJSONSync(ROOT + '/package.json')['version'];
+
+switch (command) {
+  case '--version':
+  case '--v':
+  case '-v':
+    console.log(backandVersion);
+    break;
+  case 'help':
+  case '-h':
+  case 'h':
+    commands.help();
+    break;
+  case 'login':
+  case 'l':
+    commands.login();
+    break;
+  case 'register':
+  case 'r':
+    commands.register();
+    break;
+  case 'create':
+  case 'c':
+    commands.create();
+    break;
+  case 'get':
+  case 'g':
+    commands.get();
+    break;
+  case 'update':
+  case 'u':
+    commands.update();
+    break;
+  default:
+    if (command) {
+      logger.warn("backand didn't recognize the ".yellow + command.blue + ' command. Run '.yellow + 'backand help'.blue + ' to see all available commands'.yellow)
+    } else {
+      logger.warn("You didn't specify any command");
+    }
+}

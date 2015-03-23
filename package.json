@@ -1,0 +1,54 @@
+{
+  "name": "backand",
+  "version": "0.0.1",
+  "description": "Command line interface for Backand cloud services - Online Backoffice and REST API as a service",
+  "author": "500Tech <info@500tech.com>",
+  "contributors": [
+    {
+      "name": "Adam Klein",
+      "email": "adam@500tech.com"
+    }
+  ],
+  "bin": {
+    "backand": "./bin/backand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/500tech/backand.git"
+  },
+  "main": "lib",
+  "keywords": [
+    "backand",
+    "cloud",
+    "baas",
+    "DB",
+    "database",
+    "backoffice",
+    "admin",
+    "REST API"
+  ],
+  "license": "MIT",
+  "homepage": "http://backand.com",
+  "dependencies": {
+    "change-case": "2.2.0",
+    "colors": "1.0.3",
+    "empty-dir": "0.1.0",
+    "fs-extra": "0.16.3",
+    "get-folder-size": "0.1.1",
+    "merge": "^1.2.0",
+    "ncp": "1.0.1",
+    "progress": "1.1.8",
+    "q": "^1.2.0",
+    "readline-sync": "0.5.2",
+    "replace": "0.3.0",
+    "request": "^2.53.0"
+  },
+  "devDependencies": {
+    "jasmine-node": "1.14.5",
+    "node-netrc": "0.0.1"
+  },
+  "scripts": {
+    "test": "jasmine-node spec"
+  },
+  "preferGlobal": true
+}
