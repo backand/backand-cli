@@ -1,87 +1,66 @@
-# angular-kick
+# Backand CLI
 
-**Disclaimer:** angular-kick is currently in alpha stage and it's only tested on MacOS X. Some functionality might change. Feel free to add issues to our [github](http://github.com/500tech/angular-kick) if you encounter any problems.
-
-Angular-kick is an opinionated kickstarter and generator for AngularJS based on ECMAScript 6 and best practices. It allows you to start a classic single-page application in no time and working with it with ease.
-
-Brought to you by [500Tech](http://500tech.com).
-
-## Best practices
-
-There are too many conventions for writing AngularJS applications, and after trying all the generators and conventions outside in tens of projects, we have put all of our experience to angular-kick, to make your development as fast and easy as possible.
-
-We strongly recommend you to follow [AngularJS Style Guide](https://github.com/johnpapa/angularjs-styleguide) by John Papa.
+CLI Tools for [Backand Cloud Services](http://backand.com).
 
 ## Install
 
 ```sh
-$ npm install -g angular-kick
+$ npm install -g backand
 ```
-
 
 ## Usage
 
-**Notice:** Run ```kick help``` to see available commands
+**Notice:** Run ```backand help``` to see available commands
 
-### Creating new application
+### Register / Login to Backand
 
-Creating a new application is as simple as running:
+If you don't already have an account in Backand, run the following command:
 
 ```sh
-$ kick new [application-name]
+$ backand register
 ```
 
-After you have created the application, you will have to download npm dependencies needed for Gulp and starter components from bower.
-You can do that by running:
+You will be prompted for your details.
+
+After that, or if you already have a user, you can sign in using:
 
 ```sh
-$ cd applicationName
-$ kick setup
+$ backand login
 ```
+You will be prompted for email & password.
 
-Now you can run the server, which will automatically reload the browser when you make changes to files. You can also run it in TDD mode, which will run test suit on every file change.
+After successful login, your access token will be stored in a file and you can access Backand using powerful CLI commands.
 
+### Running REST commands
+You can perform all REST API commands using the CLI.
+The output shows you the details of the request and the response.
+This is very helpful for developing a client that connects to Backand.
+
+For example, retrieve data from a specific table:
 ```sh
-$ kick server
-$ kick server:tdd
-```
-
-Additionally, you can run the server under a specific environment:
-
-```sh
-$ kick server --production
-```
-
-To display useful information about the application, such as its name, AngularJS version and included bower components:
-
-```sh
-$ kick about
+$ backand get appName tableName
 ```
 
 ### Documentation
 
-Check out our [documentation](http://www.angular-kick.com).
+Check out our [documentation](http://backand.com/cli).
 
-You can find there documentation on using other angular-kick features as generators, destroyers, running local server, testing and building for production.
+### Updating backand
 
-
-### Updating angular-kick
-
-Checking for updates on each command slows down cli apps a lot. Hence, angular-kick won't check for updates automatically.
+Checking for updates on each command slows down cli apps a lot. Hence, backand won't check for updates automatically.
 You can check for a new version by running:
 
 ```sh
-$ kick update
+$ backand update
 ```
 
-This will ask you if you want to update when there is a new version available.
-
+If a new version is available, you will asked if you want to update.
 
 ## License
 
 MIT Licensed
 
-Copyright (c) 2015, [500Tech](http://500tech.com)
+Copyright (c) 2015, [Backand](http://backand.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
