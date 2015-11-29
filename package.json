@@ -7,6 +7,10 @@
     {
       "name": "Adam Klein",
       "email": "adam@500tech.com"
+    },
+    {
+      "name": "Yoram Kornatzky",
+      "email": "kornatzky@gmail.com"
     }
   ],
   "bin": {
@@ -41,7 +45,10 @@
     "q": "^1.2.0",
     "readline-sync": "0.5.2",
     "replace": "0.3.0",
-    "request": "^2.53.0"
+    "request": "^2.53.0",
+    "backand-hosting-s3": "latest",
+    "gulp": "latest",
+    "minimist": "latest"
   },
   "devDependencies": {
     "jasmine-node": "1.14.5",

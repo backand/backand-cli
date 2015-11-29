@@ -1,3 +1,5 @@
 /.idea
 /node_modules
 **.DS_Store
+backand-cli.sublime-project
+backand-cli.sublime-workspace

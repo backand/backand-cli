@@ -11,13 +11,15 @@ var ROOT        = __dirname + '/..';
 var backandVersion = fs.readJSONSync(ROOT + '/package.json')['version'];
 
 switch (command) {
+  case 'version':
   case '--version':
   case '--v':
-  case '-v':
+  case 'v':
     console.log(backandVersion);
     break;
   case 'help':
-  case '-h':
+  case '--help':
+  case '--h':
   case 'h':
     commands.help();
     break;
@@ -40,6 +42,10 @@ switch (command) {
   case 'update':
   case 'u':
     commands.update();
+    break;
+  case 'sync':
+  case 's':
+    commands.sync();
     break;
   default:
     if (command) {
