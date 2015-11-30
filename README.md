@@ -27,23 +27,54 @@ After that, or if you already have a user, you can sign in using:
 ```sh
 $ backand login
 ```
-You will be prompted for email & password.
+You will be prompted for email, password, and app name.
 
 After successful login, your access token will be stored in a file and you can access Backand using powerful CLI commands.
 
 ### Running REST commands
+
 You can perform all REST API commands using the CLI.
+You will be prompted for the required arguments for the command.
+
 The output shows you the details of the request and the response.
 This is very helpful for developing a client that connects to Backand.
 
-For example, retrieve data from a specific table:
+1. Retrieve data from a specific object:
 ```sh
-$ backand get appName tableName
+$ backand get 
 ```
 
-### Documentation
+You will be prompted for the app name and object name
 
-Check out our [documentation](http://backand.com/cli).
+2. Create a model from a JSON description of the model
+```sh
+$ backand create
+```
+
+You will be prompted for the app name and model. The model should be enclosed in quotes.
+
+3. Sync local project folder to Backand
+```sh
+$ backand sync 
+```
+
+You will be prompted for the path to the prohect folder
+
+
+4. Clean syncing cache 
+```sh
+$ backand clean
+```
+
+### Usingn Backand CLI Commands in Shell Script
+
+All commands can be run non-interactively in a shell script by supplying their parameters on the command line.
+
+1. backand login --email email --password password --app appName
+2. backand get --app appName --object objectName
+3. backand create --app appName --object objectjson
+4. backand sync --f /path/to/project/folder
+5. backand clean 
 
 ### Updating backand
 
