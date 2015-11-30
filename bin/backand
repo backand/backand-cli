@@ -4,6 +4,7 @@ process.bin = process.title = 'backand';
 "use strict";
 var fs          = require('fs-extra');
 var colors      = require('colors');
+var options = require('minimist')(process.argv.slice(2));
 var logger      = require('../lib/logger');
 var commands    = require('../lib/commands/commands');
 var command     = process.argv[2];
@@ -18,22 +19,22 @@ switch (command) {
     commands.help();
     break;
   case 'login':
-    commands.login();
+    commands.login(options)
     break;
   case 'register':
     commands.register();
     break;
   case 'create':
-    commands.create();
+    commands.create(options);
     break;
   case 'get':
-    commands.get();
+    commands.get(options);
     break;
   case 'update':
     commands.update();
     break;
   case 'sync':
-    commands.sync();
+    commands.sync(options);
     break;
   case 'clean':
     commands.clean();
