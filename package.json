@@ -1,7 +1,7 @@
 {
   "name": "backand",
-  "version": "0.0.1",
-  "description": "Command line interface for Backand cloud services - Online Backoffice and REST API as a service",
+  "version": "1.0.0",
+  "description": "Command line interface for Backand cloud services - Online backend REST API as a service",
   "author": "500Tech <info@500tech.com>",
   "contributors": [
     {
