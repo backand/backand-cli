@@ -12,40 +12,34 @@ var backandVersion = fs.readJSONSync(ROOT + '/package.json')['version'];
 
 switch (command) {
   case 'version':
-  case '--version':
-  case '--v':
-  case 'v':
     console.log(backandVersion);
     break;
   case 'help':
-  case '--help':
-  case '--h':
-  case 'h':
     commands.help();
     break;
   case 'login':
-  case 'l':
     commands.login();
     break;
   case 'register':
-  case 'r':
     commands.register();
     break;
   case 'create':
-  case 'c':
     commands.create();
     break;
   case 'get':
-  case 'g':
     commands.get();
     break;
   case 'update':
-  case 'u':
     commands.update();
     break;
   case 'sync':
-  case 's':
     commands.sync();
+    break;
+  case 'clean':
+    commands.clean();
+    break;
+  case 'sts':
+    commands.sts();
     break;
   default:
     if (command) {
