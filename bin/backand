@@ -39,9 +39,6 @@ switch (command) {
   case 'clean':
     commands.clean();
     break;
-  case 'sts':
-    commands.sts();
-    break;
   default:
     if (command) {
       logger.warn("backand didn't recognize the ".yellow + command.blue + ' command. Run '.yellow + 'backand help'.blue + ' to see all available commands'.yellow)
