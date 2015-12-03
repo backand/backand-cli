@@ -22,7 +22,7 @@ switch (command) {
     commands.login(options)
     break;
   case 'register':
-    commands.register();
+    commands.register(options);
     break;
   case 'create':
     commands.create(options);
