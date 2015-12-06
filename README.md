@@ -66,15 +66,14 @@ You will be prompted for the path to the prohect folder
 $ backand clean
 ```
 
-### Usingn Backand CLI Commands in Shell Script
+### Using Backand CLI Commands in Shell Script
 
 All commands can be run non-interactively in a shell script by supplying their parameters on the command line.
 
-1. backand login --email email --password password --app appName
-2. backand get --app appName --object objectName
-3. backand create --app appName --object objectjson
-4. backand sync --f /path/to/project/folder
-5. backand clean 
+1. backand get --master <masterapptoken> --user <userapptoken> --app <appName> --object <objectName>
+2. backand create --master <masterapptoken> --user <userapptoken>  --app <appName> --object <objectjson>
+3. backand sync --master <masterapptoken> --user <userapptoken> --folder /path/to/project/folder
+4. backand clean 
 
 ### Updating backand
 
