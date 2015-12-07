@@ -58,7 +58,7 @@ You will be prompted for the app name and model. The model should be enclosed in
 $ backand sync 
 ```
 
-You will be prompted for the path to the prohect folder
+You will be prompted for the path to the project folder
 
 
 4. Clean syncing cache 
