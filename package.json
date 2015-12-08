@@ -48,7 +48,8 @@
     "request": "^2.53.0",
     "backand-hosting-s3": "latest",
     "gulp": "latest",
-    "minimist": "latest"
+    "minimist": "latest",
+    "underscore": "latest"
   },
   "devDependencies": {
     "jasmine-node": "1.14.5",

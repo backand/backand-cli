@@ -12,6 +12,8 @@ $ npm install -g backand
 
 **Notice:** Run ```backand help``` to see available commands
 
+You should work in a folder in which you have write permissions.
+
 ### Register / Login to Backand
 
 If you don't already have an account in Backand, run the following command:
@@ -72,7 +74,7 @@ All commands can be run non-interactively in a shell script by supplying their p
 
 1. backand get --master <masterapptoken> --user <userapptoken> --app <appName> --object <objectName>
 2. backand create --master <masterapptoken> --user <userapptoken>  --app <appName> --object <objectjson>
-3. backand sync --master <masterapptoken> --user <userapptoken> --folder /path/to/project/folder
+3. backand sync --master <masterapptoken> --user <userapptoken>  --app <appName> --folder /path/to/project/folder
 4. backand clean 
 
 ### Updating backand
