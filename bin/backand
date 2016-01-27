@@ -30,9 +30,6 @@ switch (command) {
   case 'get':
     commands.get(options);
     break;
-  case 'update':
-    commands.update();
-    break;
   case 'sync':
     commands.sync(options);
     break;
