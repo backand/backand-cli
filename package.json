@@ -35,9 +35,11 @@
   "homepage": "http://github.com/backand/backand-cli",
   "dependencies": {
     "adm-zip": "^0.4.7",
+    "archiver": "latest",
     "backand-hosting-s3": "latest",
     "change-case": "2.2.0",
     "colors": "1.0.3",
+    "del": "^2.2.2",
     "empty-dir": "0.1.0",
     "fs-extra": "0.16.3",
     "get-folder-size": "0.1.1",
