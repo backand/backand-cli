@@ -77,6 +77,14 @@ All commands can be run non-interactively in a shell script by supplying their p
 3. backand sync --master <masterapptoken> --user <userapptoken>  --app <appName> --folder /path/to/project/folder
 4. backand clean 
 
+### Building an Angular JS 2 Project with Angular CLI
+
+In order to use Backand hosting, you should set the base href of the project when building, 
+
+    ng build --base-href /appName/
+
+where appName is your app name in Backand.
+
 ### Updating backand
 
 Checking for updates on each command slows down cli apps a lot. Hence, backand won't check for updates automatically.
