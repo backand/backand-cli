@@ -5,3 +5,4 @@ backand-cli.sublime-project
 backand-cli.sublime-workspace
 backand-*.tgz
 /lib/gulp
+bin
