@@ -7,3 +7,4 @@ backand-*.tgz
 /lib/gulp
 bin/.*
 bin/*.json
+/.*.json
