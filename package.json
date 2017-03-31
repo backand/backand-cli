@@ -36,7 +36,6 @@
   "dependencies": {
     "adm-zip": "^0.4.7",
     "archiver": "latest",
-    "backand-hosting-s3": "latest",
     "change-case": "2.2.0",
     "colors": "1.0.3",
     "del": "^2.2.2",
