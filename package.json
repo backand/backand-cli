@@ -2,7 +2,7 @@
   "name": "backand",
   "version": "2.1.1",
   "description": "Command line interface for Backand cloud services - Online backend REST API as a service",
-  "author": "500Tech <info@500tech.com>",
+  "author": "Backand <info@backand.com>",
   "contributors": [
     {
       "name": "Adam Klein",
@@ -11,6 +11,10 @@
     {
       "name": "Yoram Kornatzky",
       "email": "kornatzky@gmail.com"
+    },
+    {
+      "name": "Itay Herskovits",
+      "email": "itay@backand.com"
     }
   ],
   "bin": {
