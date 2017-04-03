@@ -71,7 +71,16 @@
   },
   "devDependencies": {
     "jasmine-node": "1.14.5",
-    "node-netrc": "0.0.1"
+    "node-netrc": "0.0.1",
+    "async": "latest",
+    "aws-sdk": "latest",
+    "backand": "latest",
+    "chai": "latest",
+    "mocha": "latest",
+    "request": "latest",
+    "underscore": "latest",
+    "lodash": "latest",
+    "replace-in-file": "^2.5.0"
   },
   "scripts": {
     "test": "jasmine-node spec"
