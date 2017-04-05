@@ -7,6 +7,9 @@ var del = require('del');
 var _ = require('lodash');
 replace = require('replace-in-file');
 
+
+//to run the test: node_modules/mocha/bin/mocha
+
 describe("sync", function(){
 
 	var r = Math.random();
