@@ -352,9 +352,9 @@ describe("function init and deploy", function(done){
 
 describe("signin and signout", function(done){
 
-	var r = Math.random();
+	var r = Date.now();
 	var app = 'cli';
-	var email = 'johndoe_' + r + '@aol.com';
+	var email = 'johndoe_' + r + '@backand.com';
 	var password = 'secret';
 
 	before(function(done){
@@ -373,10 +373,10 @@ describe("signin and signout", function(done){
 
 	it("signin", function(done){
 		this.timeout(64000);
-		var commandSignin = '../bin/backand signin --email johndoe@aol.com --password secret --app cli';	
+		var commandSignin = '../bin/backand signin --email johndoe@backand.com --password secret --app cli';	
 		exec(commandSignin, function(err, stdout, stderr) {
-			fs.exists('.backand-credentials.json', function(exists){
-				expect(exists).to.be.true;
+			fs.stat('.backand-credentials.json', function(err, stats){
+				expect(stats.isFile()).to.be.true;
 				done();
 			});
 		});
@@ -387,8 +387,8 @@ describe("signin and signout", function(done){
 		this.timeout(64000);
 		var commandSignin = '../bin/backand signout';	
 		exec(commandSignin, function(err, stdout, stderr) {
-			fs.exists('.backand-credentials.json', function(exists){
-				expect(exists).to.be.false;
+			fs.stat('.backand-credentials.json', function(err, stats){
+				expect(stats).to.be.undefined;
 				done();
 			});
 		});
@@ -400,28 +400,25 @@ describe("signin and signout", function(done){
 
 });
 
-describe.skip("signup", function(done){
+describe.only("signup", function(done){
 
-	var r = Math.random();
+	var r = Date.now();
 	var app = 'cli';
-	var email = 'johndoe_' + r + '@aol.com';
-	var fullname = 'John D' + r;
+	var email = 'test_' + r + '@backand.com';
+	var fullname = '"John D' + r + '"';
 	var password = 'secret';
 
+	before(function(done){
+		del.sync(['.backand-credentials.json']);
+		done();
+	});
+
 	it("signup", function(done){
-		console.log('signup');
-		this.timeout(128000);
+		this.timeout(64000);
 		var commandSignup = '../bin/backand signup --email ' + email + ' --password ' + password + ' --fullname '  +  fullname;	
 		exec(commandSignup, function(err, stdout, stderr) {
-			console.log('arrive');
-			console.log(err);
-			console.log('oooo')
-			console.log(stdout);
-			console.log('eeee');
-			console.log(stderr);
-			fs.exists('.backand-credentials.json', function(exists){
-				console.log('exist', exists);
-				expect(exists).to.be.true;
+			fs.stat('.backand-credentials.json', function(err, stats){
+				expect(stats.isFile()).to.be.true;
 				done();
 			});
 		});		
@@ -431,11 +428,8 @@ describe.skip("signup", function(done){
 		this.timeout(64000);
 		var commandSignout = '../bin/backand signout';	
 		exec(commandSignout, function(err, stdout, stderr) {
-			console.log(err);
-			console.log(stdout);
-			console.log(stder);
-			fs.exists('.backand-credentials.json', function(exists){
-				expect(exists).to.be.false;
+			fs.stat('.backand-credentials.json', function(err, stats){
+				expect(stats).to.be.undefined;
 				done();
 			});
 		});
@@ -446,14 +440,29 @@ describe.skip("signup", function(done){
 		this.timeout(64000);
 		var commandSignin = '../bin/backand signin --email ' + email + ' --password ' + password;	
 		exec(commandSignin, function(err, stdout, stderr) {
-			console.log(err);
-			console.log(stdout);
-			console.log(stder);
-			fs.exists('.backand-credentials.json', function(exists){
-				console.log('exist', exists);
-				expect(exists).to.be.true;
+			fs.stat('.backand-credentials.json', function(err, stats){
+				expect(stats.isFile()).to.be.true;
 				done();
 			});
+		});
+	});
+
+	it("create app", function(done){
+		this.timeout(64000);
+		var commandSignin = '../bin/backand app create --name app_' + r + ' --title title_' + r;	
+		exec(commandSignin, function(err, stdout, stderr) {
+			// console.log('eee');
+			// console.log(err);
+			// console.log('ooo');
+			// console.log(stdout);
+			// console.log('rrrr');
+			// console.log(stderr);
+			// fs.stat('.backand-credentials.json', function(err, stats){
+			// 	console.log('exist', stats);
+			// 	expect(stats.isFile()).to.be.true;
+			// 	done();
+			// });
+			done();
 		});
 	});
 
