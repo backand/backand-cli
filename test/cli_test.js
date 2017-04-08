@@ -16,7 +16,7 @@ describe("sync", function(){
 	var r = Math.random();
 
 	before(function(done){
-		del.sync(['src']);	
+		del.sync(['src', '.awspublish-hosting.backand.io', '.backand-credentials.json']);	
 		fs.mkdirSync('src');
 		fs.writeFileSync('./src/x.js', '' + r);		
 		done(); 
@@ -37,7 +37,7 @@ describe("sync", function(){
 	});
 
 	after(function(done){
-		del.sync(['src']);
+		del.sync(['src', '.awspublish-hosting.backand.io', '.backand-credentials.json']);
 		done();
 	});
 
@@ -400,7 +400,7 @@ describe("signin and signout", function(done){
 
 });
 
-describe.only("signup", function(done){
+describe("signup and create app", function(done){
 
 	var r = Date.now();
 	var app = 'cli';
@@ -472,3 +472,4 @@ describe.only("signup", function(done){
 	});
 
 });
+
