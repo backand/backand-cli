@@ -473,3 +473,77 @@ describe("signup and create app", function(done){
 
 });
 
+describe.skip("signup and signin with app", function(done){
+
+     var r = Date.now();
+     var app = 'cli';
+     var email = 'test_' + r + '@backand.com';
+     var fullname = '"John D' + r + '"';
+     var password = 'secret';
+     var appName = 'app_' + r;
+     var title = 'title_' + r;
+
+     before(function(done){
+          del.sync(['.backand-credentials.json']);
+          done();
+     });
+
+     it("signup", function(done){
+          this.timeout(64000);
+          var commandSignup = '../bin/backand signup --email ' + email + ' --password ' + password + ' --fullname '  +  fullname + ' --app ' + appName + ' --title ' + title;  
+          console.log(commandSignup);   
+          exec(commandSignup, function(err, stdout, stderr) {
+          	console.log("eeee");
+          	console.log(err);	
+          	console.log("oooo");
+          	console.log(stdout);	
+          	console.log("rrr");
+          	console.log(stderr);	
+            fs.stat('.backand-credentials.json', function(err, stats){
+            	console.log(err);
+            	console.log(stats);
+                expect(stats.isFile()).to.be.true;
+                done();
+            });
+          });          
+     });
+
+     it("signout", function(done){
+          this.timeout(64000);
+          var commandSignout = '../bin/backand signout';     
+          exec(commandSignout, function(err, stdout, stderr) {
+               fs.stat('.backand-credentials.json', function(err, stats){
+                    expect(stats).to.be.undefined;
+                    done();
+               });
+          });
+     });
+
+
+     it("signin", function(done){
+          this.timeout(64000);
+          var commandSignin = '../bin/backand signin --email ' + email + ' --password ' + password + ' --app ' + appName;     
+          console.log(commandSignin);
+          exec(commandSignin, function(err, stdout, stderr) {
+          	     console.log("eeee");
+	          	console.log(err);	
+	          	console.log("oooo");
+	          	console.log(stdout);	
+	          	console.log("rrr");
+	          	console.log(stderr);
+               fs.stat('.backand-credentials.json', function(err, stats){
+               	console.log(err);
+            	console.log(stats);
+                    expect(stats.isFile()).to.be.true;
+                    done();
+               });
+          });
+     });
+
+     after(function(done){
+          del.sync(['.backand-credentials.json']);
+          done();
+     });
+
+});
+
