@@ -74,7 +74,6 @@
     "node-netrc": "0.0.1",
     "async": "latest",
     "aws-sdk": "latest",
-    "backand": "latest",
     "chai": "latest",
     "mocha": "latest",
     "request": "latest",
