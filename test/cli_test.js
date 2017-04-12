@@ -527,7 +527,7 @@ describe("signup and signin with app", function(done){
 });
 
 
-describe.skip("lambda init and deploy with signin", function(done){
+describe("lambda init and deploy with signin", function(done){
 
 	var lambdaUrl = null;
 
@@ -638,15 +638,15 @@ describe.skip("lambda init and deploy with signin", function(done){
 	after(function(done){
 		this.timeout(64000);	
 		del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
-		// var commandActionDelete = 'bin/backand action delete --object items --action testclilambda';	
-		// exec(commandActionDelete, function(err, stdout, stderr) {
-		// 	del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
-		// 	done(); 
-		// });
+		var commandActionDelete = 'bin/backand action delete --object items --action testclilambda';	
+		exec(commandActionDelete, function(err, stdout, stderr) {
+			del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
+			done(); 
+		});
 	});
 });
 
-describe.skip("function init and deploy signin", function(done){
+describe("function init and deploy signin", function(done){
 
 	var functionUrl = null;
 
@@ -659,9 +659,20 @@ describe.skip("function init and deploy signin", function(done){
 		});
 	});
 
+  it("signin", function(done){
+    this.timeout(64000);
+    var commandSignin = 'bin/backand signin --email johndoe@backand.com --password secret --app cli'; 
+    exec(commandSignin, function(err, stdout, stderr) {
+      fs.stat('.backand-credentials.json', function(err, stats){
+        expect(stats.isFile()).to.be.true;
+        done();
+      });
+    });
+  });
+
 	it("function init", function(done){
 		this.timeout(64000);
-		var commandFunctionInit = 'bin/backand function init --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';	
+		var commandFunctionInit = 'bin/backand function init --name testclifunction --app cli --template template';	
 		exec(commandFunctionInit, function(err, stdout, stderr) {			
 			var lines = stdout.split('\n');
 			functionUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The function was deployed and can be tested at '); }).replace(/The function was deployed and can be tested at /, '');
@@ -723,8 +734,8 @@ describe.skip("function init and deploy signin", function(done){
   			to: 'var helloWorld = {"message": "Hello ' + r + '!"}',
 		};
 		replace.sync(options);
-		var commandActionDeploy = 'bin/backand function deploy --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --folder testclifunction';	
-		exec(commandActionDeploy, function(err, stdout, stderr) {
+		var commandFunctionDeploy = 'bin/backand function deploy --name testclifunction --app cli --folder testclifunction';	
+		exec(commandFunctionDeploy, function(err, stdout, stderr) {
 			request.get('https://api.backand.com/1/function/general/testclifunction?parameters={}', 
 	        	{
 	        		auth: {
@@ -746,8 +757,8 @@ describe.skip("function init and deploy signin", function(done){
 	after(function(done){
 		this.timeout(64000);
 		del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
-		var commandActionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';	
-		exec(commandActionDelete, function(err, stdout, stderr) {
+		var commandFunctionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';	
+		exec(commandFunctionDelete, function(err, stdout, stderr) {
 			done(); 
 		});
 	});
