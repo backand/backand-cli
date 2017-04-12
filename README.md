@@ -96,6 +96,14 @@ $ backand update
 
 If a new version is available, you will asked if you want to update.
 
+## Tests 
+
+Clone the repo, then do:
+
+    cd backand-cli
+    npm install
+    node_modules/mocha/bin/mocha test/cli_test.js
+
 ## License
 
 MIT Licensed
