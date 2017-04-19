@@ -8,8 +8,8 @@ var _ = require('lodash');
 var replace = require('replace-in-file');
 var util = require('util');
 
+var apiUrl = "https://api.backand.com";
 
-//to run the test: node_modules/mocha/bin/mocha
 
 describe("sync", function(){
 
@@ -25,6 +25,49 @@ describe("sync", function(){
   it("sync", function(done){
     this.timeout(32000);
     var commandSync = 'bin/backand sync --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --folder ./src';
+    exec(commandSync, function(err, stdout, stderr) {
+      if (err) throw err;
+      request.get('https://s3.amazonaws.com/hosting.backand.io/cli/x.js',
+          function (error, response, body) {
+            if (error) throw error;
+            expect(body.trim()).to.equal('' + r);
+            done();
+          });
+    });
+  });
+
+  after(function(done){
+    del.sync(['src', '.awspublish-hosting.backand.io', '.backand-credentials.json']);
+    done();
+  });
+
+});
+
+describe("sync with basic authentication", function(){
+
+  var r = Math.random();
+
+  before(function(done){
+    del.sync(['src', '.awspublish-hosting.backand.io', '.backand-credentials.json']);
+    fs.mkdirSync('src');
+    fs.writeFileSync('./src/x.js', '' + r);
+    done();
+  });
+
+  it("signin", function(done){
+    this.timeout(64000);
+    var commandSignin = 'bin/backand signin --email johndoe@backand.io --password secret --app cli';
+    exec(commandSignin, function(err, stdout, stderr) {
+      fs.stat('.backand-credentials.json', function(err, stats){
+        expect(stats.isFile()).to.be.true;
+        done();
+      });
+    });
+  });
+
+  it("sync", function(done){
+    this.timeout(32000);
+    var commandSync = 'bin/backand sync --app cli --folder ./src';
     exec(commandSync, function(err, stdout, stderr) {
       if (err) throw err;
       request.get('https://s3.amazonaws.com/hosting.backand.io/cli/x.js',
@@ -69,7 +112,7 @@ describe("lambda .NET", function(done){
 
   it("lambda exists", function(done){
     this.timeout(64000);
-    request.get('https://api.backand.com/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]',
+    request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]',
         {
           auth: {
             'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -90,7 +133,7 @@ describe("lambda .NET", function(done){
     this.timeout(64000);
     async.series({
       deleteDotNet: function(callback){
-        request.delete('https://api.backand.com/1/businessRule/' + lambdaId,
+        request.delete(apiUrl + '/1/businessRule/' + lambdaId,
             {
               auth: {
                 'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -103,7 +146,7 @@ describe("lambda .NET", function(done){
         );
       },
       existsDotNet: function(callback){
-        request.get('https://api.backand.com/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]',
+        request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]',
             {
               auth: {
                 'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -136,7 +179,7 @@ describe("lambda .NET", function(done){
 });
 
 
-describe("lambda init and deploy", function(done){
+describe("lambda action init and deploy", function(done){
 
 
   var lambdaUrl = null;
@@ -170,7 +213,7 @@ describe("lambda init and deploy", function(done){
 
   it("lambda exists", function(done){
     this.timeout(64000);
-    request.get('https://api.backand.com/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]',
+    request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]',
         {
           auth: {
             'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -187,7 +230,7 @@ describe("lambda init and deploy", function(done){
 
   it("lambda call", function(done){
     this.timeout(64000);
-    request.get('https://api.backand.com/1/objects/action/items/?name=testclilambda&parameters={}',
+    request.get(apiUrl + '/1/objects/action/items/?name=testclilambda&parameters={}',
         {
           auth: {
             'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -216,7 +259,7 @@ describe("lambda init and deploy", function(done){
     replace.sync(options);
     var commandActionDeploy = 'bin/backand action deploy --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --folder items/testclilambda';
     exec(commandActionDeploy, function(err, stdout, stderr) {
-      request.get('https://api.backand.com/1/objects/action/items/?name=testclilambda&parameters={}',
+      request.get(apiUrl + '/1/objects/action/items/?name=testclilambda&parameters={}',
           {
             auth: {
               'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -242,8 +285,91 @@ describe("lambda init and deploy", function(done){
       done();
     });
   });
-})
+});
 
+
+describe("lambda action delete", function(done){
+
+  var lambdaUrl = null;
+
+  before(function(done){
+    this.timeout(64000);
+    del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
+    done();
+  });
+
+  it("lambda init", function(done){
+    this.timeout(64000);
+    var commandActionInit = 'bin/backand action init --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
+    exec(commandActionInit, function(err, stdout, stderr) {
+      var lines = stdout.split('\n');
+      lambdaUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The action was deployed and can be tested at '); }).replace(/The action was deployed and can be tested at /, '');
+      // test files exist
+      fs.readdir('items/testclilambda', (err, files) => {
+        var lambdaFiles = ['debug.js', 'handler.js', 'index.js', 'package.json'];
+        expect(Array.isArray(files)).to.be.true;
+        var theSame = _.difference(files, lambdaFiles).length == 0 && _.difference(lambdaFiles, files).length == 0;
+        expect(theSame).to.be.true;
+        done();
+      });
+
+    });
+  });
+
+  it("lambda exists", function(done){
+    this.timeout(64000);
+    request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]',
+        {
+          auth: {
+            'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
+            'pass': '9cf80730-1ab6-11e7-8124-06bcf2b21c8c'
+          }
+        },
+        function(err, response, body){
+          var bodyObj = JSON.parse(body);
+          expect(lambdaUrl).to.be.equal('https://www.backand.com/apps/#/app/cli/objects/' + bodyObj.data[0].viewTable + '/actions/' + bodyObj.data[0].iD + '/true');
+          done();
+        }
+    );
+  });
+
+  it("action delete", function(done){
+    this.timeout(64000);
+    var commandActionDelete = 'bin/backand action delete --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
+    exec(commandActionDelete, function(err, stdout, stderr) {
+      expect(
+        _.some(
+          stdout.split('\n'), 
+          function(s) { return _.startsWith(s, "Action 'testclilambda' was deleted."); }
+        )
+      ).to.be.true;
+      done();
+    });
+  });
+
+  it("lambda does not exist", function(done){
+    this.timeout(64000);
+    request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]',
+        {
+          auth: {
+            'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
+            'pass': '9cf80730-1ab6-11e7-8124-06bcf2b21c8c'
+          }
+        },
+        function(err, response, body){
+          var bodyObj = JSON.parse(body);
+          expect(bodyObj.totalRows).to.be.equal(0);
+          done();
+        }
+    );
+  });
+
+  after(function(done){
+    this.timeout(64000);
+    del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
+    done();
+  });
+});
 
 describe("function init and deploy", function(done){
 
@@ -278,7 +404,7 @@ describe("function init and deploy", function(done){
 
   it("function exists", function(done){
     this.timeout(64000);
-    request.get('https://api.backand.com/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclifunction"}]',
+    request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclifunction"}]',
         {
           auth: {
             'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -295,7 +421,7 @@ describe("function init and deploy", function(done){
 
   it("function call", function(done){
     this.timeout(64000);
-    request.get('https://api.backand.com/1/function/general/testclifunction?parameters={}',
+    request.get(apiUrl + '/1/function/general/testclifunction?parameters={}',
         {
           auth: {
             'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -324,7 +450,7 @@ describe("function init and deploy", function(done){
     replace.sync(options);
     var commandActionDeploy = 'bin/backand function deploy --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --folder testclifunction';
     exec(commandActionDeploy, function(err, stdout, stderr) {
-      request.get('https://api.backand.com/1/function/general/testclifunction?parameters={}',
+      request.get(apiUrl + '/1/function/general/testclifunction?parameters={}',
           {
             auth: {
               'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -349,6 +475,92 @@ describe("function init and deploy", function(done){
     exec(commandActionDelete, function(err, stdout, stderr) {
       done();
     });
+  });
+});
+
+describe("function delete", function(done){
+
+  var functionUrl = null;
+
+  before(function(done){
+    this.timeout(64000);
+    del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
+    var commandFunctionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
+    exec(commandFunctionDelete, function(err, stdout, stderr) {
+      done();
+    });
+  });
+
+  it("function init", function(done){
+    this.timeout(64000);
+    var commandFunctionInit = 'bin/backand function init --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
+    exec(commandFunctionInit, function(err, stdout, stderr) {
+      var lines = stdout.split('\n');
+      functionUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The function was deployed and can be tested at '); }).replace(/The function was deployed and can be tested at /, '');
+      // test files exist
+      fs.readdir('testclifunction', (err, files) => {
+        var functionFiles = ['debug.js', 'handler.js', 'index.js', 'package.json'];
+        expect(Array.isArray(files)).to.be.true;
+        var theSame = _.difference(files, functionFiles).length == 0 && _.difference(functionFiles, files).length == 0;
+        expect(theSame).to.be.true;
+        done();
+      });
+
+    });
+  });
+
+  it("function exists", function(done){
+    this.timeout(64000);
+    request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclifunction"}]',
+        {
+          auth: {
+            'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
+            'pass': '9cf80730-1ab6-11e7-8124-06bcf2b21c8c'
+          }
+        },
+        function(err, response, body){
+          var bodyObj = JSON.parse(body);
+          expect(functionUrl).to.be.equal('https://www.backand.com/apps/#/app/cli/function/' + bodyObj.data[0].iD + '/true');
+          done();
+        }
+    );
+  });
+
+  it("function delete", function(done){
+        this.timeout(64000);
+    var commandFunctionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
+    exec(commandFunctionDelete, function(err, stdout, stderr) {
+      expect(
+        _.some(
+          stdout.split('\n'), 
+          function(s) { return _.startsWith(s, "Function 'testclifunction' was deleted."); }
+        )
+      ).to.be.true;
+      done();
+    });
+  });
+
+  it("function does not exist", function(done){
+    this.timeout(64000);
+    request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclifunction"}]',
+          {
+          auth: {
+            'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
+            'pass': '9cf80730-1ab6-11e7-8124-06bcf2b21c8c'
+          }
+        },
+        function(err, response, body){
+          var bodyObj = JSON.parse(body);
+          expect(bodyObj.totalRows).to.be.equal(0);
+          done();
+        }
+    );
+  });
+
+  after(function(done){
+    this.timeout(64000);
+    del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
+    done();
   });
 });
 
@@ -570,7 +782,7 @@ describe("lambda action with signin", function(done){
 
 	it("lambda exists", function(done){
 		this.timeout(64000);	
-		request.get('https://api.backand.com/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]', 
+		request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]', 
         	{
         		auth: {
 					'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -587,7 +799,7 @@ describe("lambda action with signin", function(done){
 
 	it("lambda call", function(done){
 		this.timeout(64000);
-		request.get('https://api.backand.com/1/objects/action/items/?name=testclilambda&parameters={}', 
+		request.get(apiUrl + '/1/objects/action/items/?name=testclilambda&parameters={}', 
         	{
         		auth: {
 					'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -617,7 +829,7 @@ describe("lambda action with signin", function(done){
 		var commandActionDeploy = 'bin/backand action deploy --app cli --object items --action testclilambda  --folder' +
         ' items/testclilambda';
 		exec(commandActionDeploy, function(err, stdout, stderr) {
-			request.get('https://api.backand.com/1/objects/action/items/?name=testclilambda&parameters={}', 
+			request.get(apiUrl + '/1/objects/action/items/?name=testclilambda&parameters={}', 
 	        	{
 	        		auth: {
 						'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -690,7 +902,7 @@ describe("lambda function with signin", function(done){
 
 	it("function exists", function(done){
 		this.timeout(64000);	
-		request.get('https://api.backand.com/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclifunction"}]', 
+		request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclifunction"}]', 
         	{
         		auth: {
 					'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -707,7 +919,7 @@ describe("lambda function with signin", function(done){
 
 	it("function call", function(done){
 		this.timeout(64000);
-		request.get('https://api.backand.com/1/function/general/testclifunction?parameters={}', 
+		request.get(apiUrl + '/1/function/general/testclifunction?parameters={}', 
         	{
         		auth: {
 					'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
@@ -736,7 +948,7 @@ describe("lambda function with signin", function(done){
 		replace.sync(options);
 		var commandFunctionDeploy = 'bin/backand function deploy --name testclifunction --app cli --folder testclifunction';	
 		exec(commandFunctionDeploy, function(err, stdout, stderr) {
-			request.get('https://api.backand.com/1/function/general/testclifunction?parameters={}', 
+			request.get(apiUrl + '/1/function/general/testclifunction?parameters={}', 
 	        	{
 	        		auth: {
 						'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
