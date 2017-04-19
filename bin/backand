@@ -18,7 +18,7 @@ var commands    =     require('../lib/commands/commands');
 var command     =     process.argv[2];
 var ROOT        =    __dirname + '/..';
 var backandVersion = fs.readJSONSync(ROOT + '/package.json')['version'];
-
+var analytics			 = require('../lib/api/analytics');
 
 if(command) {
 
@@ -27,6 +27,8 @@ if(command) {
     return;
   }
 
+  //logger.log(options._.join(' '));
+  analytics.track(null,'cli command',{command: options._.join(' ')});
   commands.getCommand(command)(options);
 }
 else {
