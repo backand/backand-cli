@@ -197,8 +197,9 @@ describe("lambda action init and deploy", function(done){
     this.timeout(64000);
     var commandActionInit = 'bin/backand action init --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
     exec(commandActionInit, function(err, stdout, stderr) {
-      var lines = stdout.split('\n');
       lambdaUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The action was deployed and can be tested at '); }).replace(/The action was deployed and can be tested at /, '');
+
+      expect(stdout).to.have.string('The action was deployed and can be tested at');
       // test files exist
       fs.readdir('items/testclilambda', (err, files) => {
         var lambdaFiles = ['debug.js', 'handler.js', 'index.js', 'package.json'];
@@ -259,6 +260,7 @@ describe("lambda action init and deploy", function(done){
     replace.sync(options);
     var commandActionDeploy = 'bin/backand action deploy --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --folder items/testclilambda';
     exec(commandActionDeploy, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('The action was deployed and can be tested at');
       request.get(apiUrl + '/1/objects/action/items/?name=testclilambda&parameters={}',
           {
             auth: {
@@ -302,7 +304,6 @@ describe("lambda action delete", function(done){
     this.timeout(64000);
     var commandActionInit = 'bin/backand action init --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
     exec(commandActionInit, function(err, stdout, stderr) {
-      var lines = stdout.split('\n');
       lambdaUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The action was deployed and can be tested at '); }).replace(/The action was deployed and can be tested at /, '');
       // test files exist
       fs.readdir('items/testclilambda', (err, files) => {
@@ -388,7 +389,6 @@ describe("function init and deploy", function(done){
     this.timeout(64000);
     var commandFunctionInit = 'bin/backand function init --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
     exec(commandFunctionInit, function(err, stdout, stderr) {
-      var lines = stdout.split('\n');
       functionUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The function was deployed and can be tested at '); }).replace(/The function was deployed and can be tested at /, '');
       // test files exist
       fs.readdir('testclifunction', (err, files) => {
@@ -495,7 +495,6 @@ describe("function delete", function(done){
     this.timeout(64000);
     var commandFunctionInit = 'bin/backand function init --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
     exec(commandFunctionInit, function(err, stdout, stderr) {
-      var lines = stdout.split('\n');
       functionUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The function was deployed and can be tested at '); }).replace(/The function was deployed and can be tested at /, '');
       // test files exist
       fs.readdir('testclifunction', (err, files) => {
@@ -589,6 +588,7 @@ describe("signin and signout", function(done){
     this.timeout(64000);
     var commandSignin = 'bin/backand signin --email johndoe@backand.io --password secret --app cli';
     exec(commandSignin, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('Logged in successfully to cli');
       fs.stat('.backand-credentials.json', function(err, stats){
         expect(stats.isFile()).to.be.true;
         done();
@@ -631,6 +631,7 @@ describe("signup and create app", function(done){
     this.timeout(64000);
     var commandSignup = 'bin/backand signup --email ' + email + ' --password ' + password + ' --fullname '  +  fullname;
     exec(commandSignup, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('Welcome to backand!');
       fs.stat('.backand-credentials.json', function(err, stats){
         expect(stats.isFile()).to.be.true;
         done();
@@ -654,6 +655,7 @@ describe("signup and create app", function(done){
     this.timeout(64000);
     var commandSignin = 'bin/backand signin --email ' + email + ' --password ' + password;
     exec(commandSignin, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('Logged in successfully to Backand');
       fs.stat('.backand-credentials.json', function(err, stats){
         expect(stats.isFile()).to.be.true;
         done();
@@ -668,6 +670,7 @@ describe("signup and create app", function(done){
     //console.log('signup and create app appName:' + appName);
     var commandSignin = 'bin/backand app create --name ' + appName + ' --title ' + appTitle;
     exec(commandSignin, function(err, stdout, stderr) {
+      expect(stdout).to.have.string("The app '" + appName + "' was created successfully!");
       done();
     });
   });
@@ -696,9 +699,11 @@ describe("signup and signin with app", function(done){
 
   it("signup", function(done){
     this.timeout(64000);
-    var commandSignup = 'bin/backand signup --email ' + email + ' --password ' + password + ' --fullname '  +  fullname + ' --app ' + appName + ' --title ' + title;
+    var commandSignup = 'bin/backand signup --email ' + email + ' --password ' + password + ' --fullname '  +  fullname + ' --app ' + appName;
     //console.log(commandSignup);
     exec(commandSignup, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('Welcome to backand!');
+      expect(stdout).to.have.string("The app '" + appName + "' was created successfully!");
       fs.stat('.backand-credentials.json', function(err, stats){
         expect(stats.isFile()).to.be.true;
         done();
@@ -723,6 +728,7 @@ describe("signup and signin with app", function(done){
     var commandSignin = 'bin/backand signin --email ' + email + ' --password ' + password + ' --app ' + appName;
     //console.log(commandSignin);
     exec(commandSignin, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('Logged in successfully to ' + appName);
       fs.stat('.backand-credentials.json', function(err, stats){
         expect(stats.isFile()).to.be.true;
         done();
@@ -755,7 +761,8 @@ describe("lambda action with signin", function(done){
 		this.timeout(64000);
 		var commandSignin = 'bin/backand signin --email johndoe@backand.io --password secret --app cli';
 		exec(commandSignin, function(err, stdout, stderr) {
-			fs.stat('.backand-credentials.json', function(err, stats){
+      expect(stdout).to.have.string('Logged in successfully to cli');
+      fs.stat('.backand-credentials.json', function(err, stats){
 				expect(stats.isFile()).to.be.true;
 				done();
 			});
@@ -764,10 +771,10 @@ describe("lambda action with signin", function(done){
 
 	it("action init", function(done){
 		this.timeout(64000);
-		var commandActionInit = 'bin/backand action init --app cli --object items --action testclilambda';
+		var commandActionInit = 'bin/backand action init --object items --action testclilambda';
 		exec(commandActionInit, function(err, stdout, stderr) {
-			var lines = stdout.split('\n');
 			lambdaUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The action was deployed and can be tested at '); }).replace(/The action was deployed and can be tested at /, '');
+      expect(stdout).to.have.string('The action was deployed and can be tested at');
 			// test files exist		
 			fs.readdir('items/testclilambda', (err, files) => {
 				var lambdaFiles = ['debug.js', 'handler.js', 'index.js', 'package.json'];
@@ -803,7 +810,7 @@ describe("lambda action with signin", function(done){
         	{
         		auth: {
 					'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
-					'pass': '9cf80730-1ab6-11e7-8124-06bcf2b21c8c'
+					'pass': 'd2b85eba-1c41-11e7-8124-06bcf2b21c8c' //johndoe@backand.com //user
 				} 	
         	},
         	function(err, response, body){
@@ -826,8 +833,7 @@ describe("lambda action with signin", function(done){
   			to: 'var helloWorld = {"message": "Hello ' + r + '!"}',
 		};
 		replace.sync(options);
-		var commandActionDeploy = 'bin/backand action deploy --app cli --object items --action testclilambda  --folder' +
-        ' items/testclilambda';
+		var commandActionDeploy = 'bin/backand action deploy --object items --action testclilambda';
 		exec(commandActionDeploy, function(err, stdout, stderr) {
 			request.get(apiUrl + '/1/objects/action/items/?name=testclilambda&parameters={}', 
 	        	{
@@ -874,6 +880,7 @@ describe("lambda function with signin", function(done){
     this.timeout(64000);
     var commandSignin = 'bin/backand signin --email johndoe@backand.io --password secret --app cli';
     exec(commandSignin, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('Logged in successfully to cli');
       fs.stat('.backand-credentials.json', function(err, stats){
         expect(stats.isFile()).to.be.true;
         done();
@@ -883,11 +890,11 @@ describe("lambda function with signin", function(done){
 
 	it("function init", function(done){
 		this.timeout(64000);
-		var commandFunctionInit = 'bin/backand function init --name testclifunction --app cli --template' +
+		var commandFunctionInit = 'bin/backand function init --name testclifunction' +
         ' template';
 		exec(commandFunctionInit, function(err, stdout, stderr) {			
-			var lines = stdout.split('\n');
 			functionUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The function was deployed and can be tested at '); }).replace(/The function was deployed and can be tested at /, '');
+      expect(stdout).to.have.string('The function was deployed and can be tested at');
 			// test files exist		
 			fs.readdir('testclifunction', (err, files) => {
 				var functionFiles = ['debug.js', 'handler.js', 'index.js', 'package.json'];
@@ -923,7 +930,7 @@ describe("lambda function with signin", function(done){
         	{
         		auth: {
 					'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
-					'pass': '9cf80730-1ab6-11e7-8124-06bcf2b21c8c'
+          'pass': 'd2b85eba-1c41-11e7-8124-06bcf2b21c8c' //johndoe@backand.com //user
 				} 	
         	},
         	function(err, response, body){
@@ -946,8 +953,9 @@ describe("lambda function with signin", function(done){
   			to: 'var helloWorld = {"message": "Hello ' + r + '!"}',
 		};
 		replace.sync(options);
-		var commandFunctionDeploy = 'bin/backand function deploy --name testclifunction --app cli --folder testclifunction';	
+		var commandFunctionDeploy = 'bin/backand function deploy --name testclifunction';
 		exec(commandFunctionDeploy, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('The function was deployed and can be tested at');
 			request.get(apiUrl + '/1/function/general/testclifunction?parameters={}', 
 	        	{
 	        		auth: {
