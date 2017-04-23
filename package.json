@@ -1,6 +1,6 @@
 {
   "name": "backand",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "Command line interface for Backand cloud services - Online backend REST API as a service",
   "author": "Backand <info@backand.com>",
   "contributors": [
