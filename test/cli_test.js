@@ -577,7 +577,7 @@ describe("signin and signout", function(done){
     this.timeout(64000);
     var commandSignin = 'bin/backand signin --email ' + email + ' --password ' + password + ' --app cli';
     exec(commandSignin, function(err, stdout, stderr) {
-      expect(stdout).to.have.string('"error": "invalid_grant"');
+      expect(stdout).to.have.string('The user is not approved for this app');
       done();
     });
   });
