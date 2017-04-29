@@ -39,6 +39,7 @@ After successful login, your access token will be stored in a file locally, and 
 
 You can use the CLI to manage all of the Server-Side Node.JS functions and actions in your application. To manage actions, use the following set of commands:
 
+#### Action commands
 * Creates a new action
 ```sh
 $ backand action init
@@ -53,6 +54,7 @@ $ npm debug.js
 $ backand action deploy
 ```
 
+#### Function commands
 * Creates a new function
 ```sh
 $ backand function create
@@ -104,18 +106,20 @@ You can also simply re-install the tool:
 ```sh
 $ npm install -g backand
 ```
+
+## Testing
+
+To run the CLI's suite of unit tests, clone the repo and run the following commands:
+
+```sh
+$ cd backand-cli
+$ npm install
+$ npm test
+```
+
 ## Learn More
 
 You can find more info on the Backand CLI in [our documentation](http://docs.backand.com/#backand-cli)
-
-## Tests 
-
-Clone the repo, then do:
-
-    cd backand-cli
-    npm install
-    npm test
-
 ## License
 
 MIT Licensed
