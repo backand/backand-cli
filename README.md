@@ -80,9 +80,9 @@ $ backand function run
 All commands can be run non-interactively in a shell script by supplying their parameters on the command line.
 
 1. backand get --master <masterapptoken> --user <userapptoken> --app <appName> --object <objectName>
-1. backand action init --object <object> --action <action name>    
-1. backand function init --name <function name>
-1. backand sync
+2. backand action init --object <object> --action <action_name>    
+3. backand function init --name <function_name>
+4. backand sync
 
 ### Building an Angular JS 2 Project with Angular CLI
 
