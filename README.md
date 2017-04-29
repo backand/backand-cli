@@ -1,6 +1,6 @@
 # Backand CLI
 
-CLI Tools for [Backand Cloud Services](https://www.backand.com).
+A CLI Tool for [Backand](https://www.backand.com).
 
 ## Install
 
@@ -12,60 +12,65 @@ $ npm install -g backand
 
 **Notice:** Run ```backand help``` to see available commands
 
-You should work in a folder in which you have write permissions.
+Pick the appropriate section below for the command you need.
+
+Note that you should use these commands from a folder in which your user has write access. The SDK creates some maintenance and intermediary files and folders as it works, which can be problematic if the user does not have sufficient permission.
 
 ### Register / Login to Backand
 
-If you don't already have an account in Backand, run the following command:
+To create an account with Backand, run the following command:
 
 ```sh
-$ backand register
+$ backand signup
 ```
 
-You will be prompted for your details.
+You will be prompted for your new account details, but you can also provide them as arguments to the signup call. You can pull the list from the tool's "help" function.
 
-After that, or if you already have a user, you can sign in using:
+Once you have a user, you can sign in using:
 
 ```sh
-$ backand login
+$ backand signin
 ```
-You will be prompted for email, password, and app name.
+You will be prompted for your account email, password, and app name to authenticate with.
 
-After successful login, your access token will be stored in a file and you can access Backand using powerful CLI commands.
+After successful login, your access token will be stored in a file locally, and you'll be able to make use of the more powerful CLI commands.
 
-### Running REST commands
+### Managing Actions and Functions
 
-You can perform all REST API commands using the CLI.
-You will be prompted for the required arguments for the command.
+You can use the CLI to manage all of the Server-Side Node.JS functions and actions in your application. To manage actions, use the following set of commands:
 
-The output shows you the details of the request and the response.
-This is very helpful for developing a client that connects to Backand.
-
-1. Retrieve data from a specific object:
+* Creates a new action
 ```sh
-$ backand get 
+$ backand action init
 ```
 
-You will be prompted for the app name and object name
-
-2. Create a model from a JSON description of the model
+* Debugs an action locally (from within the action folder)
 ```sh
-$ backand create
+$ npm debug.js
+```
+* Deploys an action
+```sh
+$ backand action deploy
 ```
 
-You will be prompted for the app name and model. The model should be enclosed in quotes.
-
-3. Sync local project folder to Backand
+* Creates a new function
 ```sh
-$ backand sync 
+$ backand function create
 ```
 
-You will be prompted for the path to the project folder
-
-
-4. Clean syncing cache 
+* Deploys a function
 ```sh
-$ backand clean
+$ backand function deploy
+```
+
+* Deletes a function
+```sh
+$ backand function delete
+```
+
+* Runs a function
+```sh
+$ backand function run
 ```
 
 ### Using Backand CLI Commands in Shell Script
@@ -73,28 +78,35 @@ $ backand clean
 All commands can be run non-interactively in a shell script by supplying their parameters on the command line.
 
 1. backand get --master <masterapptoken> --user <userapptoken> --app <appName> --object <objectName>
-2. backand create --master <masterapptoken> --user <userapptoken>  --app <appName> --object <objectjson>
-3. backand sync --master <masterapptoken> --user <userapptoken>  --app <appName> --folder /path/to/project/folder
-4. backand clean 
+1. backand action init --object <object> --action <action name>    
+1. backand function init --name <function name>
+1. backand sync
 
 ### Building an Angular JS 2 Project with Angular CLI
 
-In order to use Backand hosting, you should set the base href of the project when building, 
+In order to use Backand hosting, you should set the base href of the project when building your app. Do this as follows: 
 
     ng build --base-href /appName/
 
-where appName is your app name in Backand.
+Simply replace "appName" with the name of your app in Backand, and you are ready to go!
 
 ### Updating backand
 
 Checking for updates on each command slows down cli apps a lot. Hence, backand won't check for updates automatically.
-You can check for a new version by running:
+You can easily install updates at your leisure using NPM:
 
 ```sh
-$ backand update
+$ npm update -g backand
 ```
 
-If a new version is available, you will asked if you want to update.
+You can also simply re-install the tool:
+
+```sh
+$ npm install -g backand
+```
+## Learn More
+
+You can find more info on the Backand CLI in [our documentation](http://docs.backand.com/#backand-cli)
 
 ## Tests 
 
