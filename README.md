@@ -77,16 +77,18 @@ $ backand function run
 
 ### Using Backand CLI Commands in Shell Script
 
-All commands can be run non-interactively in a shell script by supplying their parameters on the command line.
+All commands can be run non-interactively in a shell script by supplying their parameters on the command line. Here is an example script that fetches a list of objects, creates an action, creates a function, then syncs with the server:
 
-1. backand get --master <masterapptoken> --user <userapptoken> --app <appName> --object <objectName>
-2. backand action init --object <object> --action <action_name>    
-3. backand function init --name <function_name>
-4. backand sync
+```sh
+$ backand get --master <masterapptoken> --user <userapptoken> --app <appName> --object <objectName>
+$ backand action init --object <object> --action <actionname>    
+$ backand function init --name <functionName>
+$ backand sync
+```
 
-### Building an Angular JS 2 Project with Angular CLI
+### Deploying an AngularJS 2 Project with the CLI
 
-In order to use Backand hosting, you should set the base href of the project when building your app. Do this as follows: 
+In order to use Backand hosting, you need to set the base href of the project when building your app. Do this as follows: 
 
     ng build --base-href /appName/
 
