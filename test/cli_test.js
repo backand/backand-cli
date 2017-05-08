@@ -1158,3 +1158,147 @@ describe("lambda function with signup", function(done){
     });
   });
 });
+
+describe("action run", function(done){
+
+  var actionParam;
+
+
+
+  before(function(done){
+    this.timeout(64000);
+    del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
+    var commandActionDelete = 'bin/backand action delete --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
+    exec(commandActionDelete, function(err, stdout, stderr) {
+      done();
+    });
+  });
+
+  it("action init", function(done){
+    this.timeout(64000);
+    var commandActionInit = 'bin/backand action init --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
+    exec(commandActionInit, function(err, stdout, stderr) {
+      
+      expect(stdout).to.have.string('The action was deployed and can be tested at');
+      // test files exist
+      fs.readdir('items/testclilambda', (err, files) => {
+        var lambdaFiles = ['debug.js', 'handler.js', 'index.js', 'package.json'];
+        expect(Array.isArray(files)).to.be.true;
+        var theSame = _.difference(files, lambdaFiles).length == 0 && _.difference(lambdaFiles, files).length == 0;
+        expect(theSame).to.be.true;
+        done();
+      });
+
+    });
+  });
+
+  it("action deploy", function(done){
+    this.timeout(64000);
+    actionParam = Math.random();
+    var options = {
+      files: 'items/testclilambda/index.js',
+      from: /var helloWorld = \{"message": "Hello World!"\}/g,
+      to: 'var helloWorld = {"message": "mmm" + parameters.r + "MMM" }',
+    };
+    replace.sync(options);
+    var commandActionDeploy = 'bin/backand action deploy --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --folder items/testclilambda';
+    exec(commandActionDeploy, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('The action was deployed and can be tested at');
+      done();
+    });
+  });
+
+
+
+  it("action run", function(done){
+    this.timeout(64000);
+    var commandActionRun = 'bin/backand action run --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --debug false --params \'{ "r": ' + actionParam  + ' }\'';
+    exec(commandActionRun, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('"StatusCode": 200');
+      expect(stdout).to.have.string("mmm" + actionParam + "MMM");
+      done();
+    });    
+  });
+
+
+
+  after(function(done){
+    this.timeout(64000);
+    del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
+    var commandActionDelete = 'bin/backand action delete --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
+    exec(commandActionDelete, function(err, stdout, stderr) {
+      done();
+    });
+  });
+});
+
+describe("function run", function(done){
+
+  var actionParam;
+
+  
+
+  before(function(done){
+    this.timeout(64000);
+    del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
+    var commandFunctionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
+    exec(commandFunctionDelete, function(err, stdout, stderr) {
+      done();
+    });
+  });
+
+  it("function init", function(done){
+    this.timeout(64000);
+    var commandFunctionInit = 'bin/backand function init --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
+    exec(commandFunctionInit, function(err, stdout, stderr) {
+      // test files exist
+      fs.readdir('testclifunction', (err, files) => {
+        var functionFiles = ['debug.js', 'handler.js', 'index.js', 'package.json'];
+        expect(Array.isArray(files)).to.be.true;
+        var theSame = _.difference(files, functionFiles).length == 0 && _.difference(functionFiles, files).length == 0;
+        expect(theSame).to.be.true;
+        done();
+      });
+
+    });
+  });
+
+  it("function deploy", function(done){
+    this.timeout(64000);
+    actionParam = Math.random();
+    var options = {
+      files: 'testclifunction/index.js',
+      from: /var helloWorld = \{"message": "Hello World!"\}/g,
+      to: 'var helloWorld = {"message": "mmm" + parameters.r + "MMM" }',
+    };
+    replace.sync(options);
+    var commandFunctionDeploy = 'bin/backand function deploy --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --folder testclifunction';
+    exec(commandFunctionDeploy, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('The function was deployed and can be tested at');
+      done();
+    });
+  });
+
+
+
+  it("function run", function(done){
+    this.timeout(64000);
+    var commandFunctionRun = 'bin/backand function run --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --debug false --params \'{ "r": ' + actionParam  + ' }\'';
+    exec(commandFunctionRun, function(err, stdout, stderr) {
+      expect(stdout).to.have.string('"StatusCode": 200');
+      expect(stdout).to.have.string("mmm" + actionParam + "MMM");
+      done();
+    });    
+  });
+
+
+
+  after(function(done){
+    this.timeout(64000);
+    del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
+    var commandFunctionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
+    exec(commandFunctionDelete, function(err, stdout, stderr) {
+      done();
+    });
+  });
+});
