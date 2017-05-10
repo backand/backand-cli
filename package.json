@@ -45,6 +45,7 @@
     "concurrent-transform": "^1.0.0",
     "del": "^2.2.2",
     "fs-extra": "0.16.3",
+    "git-state": "^3.1.1",
     "gulp": "^3.9.0",
     "gulp-awspublish": "^3.3.0",
     "gulp-awspublish-router": "^0.1.3",
