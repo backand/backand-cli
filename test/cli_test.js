@@ -1302,3 +1302,123 @@ describe("function run", function(done){
     });
   });
 });
+
+
+describe("object", function(){
+
+  var idNewObject = null;
+
+  before(function(done){
+    del.sync(['.backand-credentials.json']);
+    done();
+  });
+
+  it("signin", function(done){
+    this.timeout(64000);
+    var commandSignin = 'bin/backand signin --email john.doe@backand.io --password secret --app clitest';
+    exec(commandSignin, function(err, stdout, stderr) {
+      fs.stat('.backand-credentials.json', function(err, stats){
+        expect(stats.isFile()).to.be.true;
+        done();
+      });
+    });
+  });
+
+  it("empty list", function(done){
+    this.timeout(64000);
+    var commandGetList = "bin/backand object getList  --app clitest  --object furniture --params '{ \"pageSize\" : 200 }'";
+    // console.log(commandGetList)
+    exec(commandGetList, function(err, stdout, stderr) {
+      var outputLinesArray = stdout.split("\n");
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('"totalRows": 0') })).to.not.be.null;
+      done();
+    });
+  });
+
+  it("create", function(done){
+    this.timeout(64000);
+    var commandCreate = "bin/backand object create  --app clitest  --object items --params '{ }'  --data '{ \"description\" : \"sofa\", \"name\": \"red\"  }'";
+    // console.log(commandCreate);
+    exec(commandCreate, function(err, stdout, stderr) {
+      var outputLinesArray = stdout.split("\n");
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('responseCode: 200') > -1; })).to.not.be.null;
+      var idLine = _.findIndex(outputLinesArray, function(l){ return l.indexOf('metadata') > -1; });
+      expect(idLine).to.not.be.equal(-1);
+      idNewObject = parseInt(outputLinesArray[idLine + 1].replace(/"id":/g, '').replace(/"/, '').trim());
+      expect(idNewObject).to.not.be.null;
+      expect(idNewObject).to.not.be.undefined;
+      done();
+    });
+  });
+
+  it("list with one element", function(done){
+    this.timeout(64000);
+    var commandGetList = "bin/backand object getList  --app clitest  --object furniture --params '{ \"pageSize\" : 200 }'";
+    exec(commandGetList, function(err, stdout, stderr) {
+      var outputLinesArray = stdout.split("\n");
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('responseCode: 200') > -1; })).to.not.be.null;
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('"totalRows": 1') })).to.not.be.null;
+      done();
+    });
+  });
+
+  it("getOne", function(done){
+    this.timeout(64000);
+    var commandGetOne = "bin/backand object getOne  --app clitest  --object furniture --params '{ \"id\" : " + idNewObject + "}'";
+    // console.log(commandGetOne)
+    exec(commandGetOne, function(err, stdout, stderr) {
+      var outputLinesArray = stdout.split("\n");
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('responseCode: 200') > -1; })).to.not.be.null;
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('"totalRows": 1') })).to.not.be.null;
+      done();
+    });
+  });
+
+  it("update", function(done){
+    this.timeout(64000);
+    var commandUpdate = "bin/backand object update  --app clitest  --object items --params '{ \"id:\"" + idNewObject +  " }'  --data '{ \"description\" : \"table\", \"name\": \"green\"  }'";
+    // console.log(commandUpdate);
+    exec(commandUpdate, function(err, stdout, stderr) {
+      var outputLinesArray = stdout.split("\n");
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('responseCode: 200') > -1; })).to.not.be.null;
+      done();
+    });
+  });
+
+  it("was changed", function(done){
+    this.timeout(64000);
+    var commandGetOne = "bin/backand object getOne  --app clitest  --object furniture --params '{ \"id\" : " + idNewObject + " }'";
+    // console.log(commandGetOne)
+    exec(commandGetOne, function(err, stdout, stderr) {
+      var outputLinesArray = stdout.split("\n");
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('"description": "table"') > -1; })).to.not.be.null;
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('"name": "green"') })).to.not.be.null;
+      done();
+    });
+  });
+
+
+  it("remove", function(done){
+    this.timeout(64000);
+    var commandGetList = "bin/backand object remove  --app clitest  --object furniture --params '{ \"id\" :" + idNewObject + " }'";
+    // console.log(commandGetList)
+    exec(commandGetList, function(err, stdout, stderr) {
+      var outputLinesArray = stdout.split("\n");
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('"id": "1"') })).to.not.be.null;
+      done();
+    });
+  });
+
+  it("list was emptied", function(done){
+    this.timeout(64000);
+    var commandGetList = "bin/backand object getList  --app clitest  --object furniture --params '{ \"pageSize\" : 200 }'";
+    // console.log(commandGetList)
+    exec(commandGetList, function(err, stdout, stderr) {
+      var outputLinesArray = stdout.split("\n");
+      expect(_.find(outputLinesArray, function(l){ return l.indexOf('"totalRows": 0') })).to.not.be.null;
+      done();
+    });
+  });
+
+
+});
