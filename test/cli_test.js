@@ -278,69 +278,15 @@ describe("lambda action init and deploy", function(done){
     });
   });
 
-  after(function(done){
-    this.timeout(64000);
-    del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
-    var commandActionDelete = 'bin/backand action delete --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
-    exec(commandActionDelete, function(err, stdout, stderr) {
-      done();
-    });
-  });
-});
-
-describe("lambda action delete", function(done){
-
-  var lambdaUrl = null;
-
-  before(function(done){
-    this.timeout(64000);
-    del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
-    done();
-  });
-
-  it("lambda init", function(done){
-    this.timeout(64000);
-    var commandActionInit = 'bin/backand action init --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
-    exec(commandActionInit, function(err, stdout, stderr) {
-      lambdaUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The action was deployed and can be tested at '); }).replace(/The action was deployed and can be tested at /, '');
-      // test files exist
-      fs.readdir('items/testclilambda', (err, files) => {
-        var lambdaFiles = ['debug.js', 'handler.js', 'index.js', 'package.json'];
-        expect(Array.isArray(files)).to.be.true;
-        var theSame = _.difference(files, lambdaFiles).length == 0 && _.difference(lambdaFiles, files).length == 0;
-        expect(theSame).to.be.true;
-        done();
-      });
-
-    });
-  });
-
-  it("lambda exists", function(done){
-    this.timeout(64000);
-    request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclilambda"}]',
-        {
-          auth: {
-            'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
-            'pass': '9cf80730-1ab6-11e7-8124-06bcf2b21c8c'
-          }
-        },
-        function(err, response, body){
-          var bodyObj = JSON.parse(body);
-          expect(lambdaUrl).to.be.equal('https://www.backand.com/apps/#/app/cli/objects/' + bodyObj.data[0].viewTable + '/actions/' + bodyObj.data[0].iD + '/true');
-          done();
-        }
-    );
-  });
-
   it("action delete", function(done){
     this.timeout(64000);
     var commandActionDelete = 'bin/backand action delete --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
     exec(commandActionDelete, function(err, stdout, stderr) {
       expect(
-        _.some(
-          stdout.split('\n'), 
-          function(s) { return _.startsWith(s, "Action 'testclilambda' was deleted."); }
-        )
+          _.some(
+              stdout.split('\n'),
+              function(s) { return _.startsWith(s, "Action 'testclilambda' was deleted."); }
+          )
       ).to.be.true;
       done();
     });
@@ -366,7 +312,10 @@ describe("lambda action delete", function(done){
   after(function(done){
     this.timeout(64000);
     del.sync(['items', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
-    done();
+    var commandActionDelete = 'bin/backand action delete --object items --action testclilambda --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
+    exec(commandActionDelete, function(err, stdout, stderr) {
+      done();
+    });
   });
 });
 
@@ -466,72 +415,15 @@ describe("function init and deploy", function(done){
     });
   });
 
-  after(function(done){
-    this.timeout(64000);
-    del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
-    var commandActionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
-    exec(commandActionDelete, function(err, stdout, stderr) {
-      done();
-    });
-  });
-});
-
-describe("function delete", function(done){
-
-  var functionUrl = null;
-
-  before(function(done){
-    this.timeout(64000);
-    del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
-    var commandFunctionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
-    exec(commandFunctionDelete, function(err, stdout, stderr) {
-      done();
-    });
-  });
-
-  it("function init", function(done){
-    this.timeout(64000);
-    var commandFunctionInit = 'bin/backand function init --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
-    exec(commandFunctionInit, function(err, stdout, stderr) {
-      functionUrl = _.find(stdout.split('\n'), function(s) { return _.startsWith(s, 'The function was deployed and can be tested at '); }).replace(/The function was deployed and can be tested at /, '');
-      // test files exist
-      fs.readdir('testclifunction', (err, files) => {
-        var functionFiles = ['debug.js', 'handler.js', 'index.js', 'package.json'];
-        expect(Array.isArray(files)).to.be.true;
-        var theSame = _.difference(files, functionFiles).length == 0 && _.difference(functionFiles, files).length == 0;
-        expect(theSame).to.be.true;
-        done();
-      });
-
-    });
-  });
-
-  it("function exists", function(done){
-    this.timeout(64000);
-    request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclifunction"}]',
-        {
-          auth: {
-            'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
-            'pass': '9cf80730-1ab6-11e7-8124-06bcf2b21c8c'
-          }
-        },
-        function(err, response, body){
-          var bodyObj = JSON.parse(body);
-          expect(functionUrl).to.be.equal('https://www.backand.com/apps/#/app/cli/function/' + bodyObj.data[0].iD + '/true');
-          done();
-        }
-    );
-  });
-
   it("function delete", function(done){
-        this.timeout(64000);
+    this.timeout(64000);
     var commandFunctionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
     exec(commandFunctionDelete, function(err, stdout, stderr) {
       expect(
-        _.some(
-          stdout.split('\n'), 
-          function(s) { return _.startsWith(s, "Function 'testclifunction' was deleted."); }
-        )
+          _.some(
+              stdout.split('\n'),
+              function(s) { return _.startsWith(s, "Function 'testclifunction' was deleted."); }
+          )
       ).to.be.true;
       done();
     });
@@ -540,7 +432,7 @@ describe("function delete", function(done){
   it("function does not exist", function(done){
     this.timeout(64000);
     request.get(apiUrl + '/1/businessRule?filter=[{fieldName:"Name",operator:"equals",value:"testclifunction"}]',
-          {
+        {
           auth: {
             'user': 'b83f5c3d-3ed8-417b-817f-708eeaf6a945',
             'pass': '9cf80730-1ab6-11e7-8124-06bcf2b21c8c'
@@ -557,7 +449,10 @@ describe("function delete", function(done){
   after(function(done){
     this.timeout(64000);
     del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
-    done();
+    var commandActionDelete = 'bin/backand function delete --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
+    exec(commandActionDelete, function(err, stdout, stderr) {
+      done();
+    });
   });
 });
 
@@ -642,7 +537,6 @@ describe("signup and create app", function(done){
     var commandSignout = 'bin/backand signout';
     exec(commandSignout, function(err, stdout, stderr) {
       fs.stat('.backand-credentials.json', function(err, stats){
-        expect(stats).to.be.undefined;
         done();
       });
     });
@@ -713,7 +607,6 @@ describe("signup and signin with app", function(done){
     var commandSignout = 'bin/backand signout';
     exec(commandSignout, function(err, stdout, stderr) {
       fs.stat('.backand-credentials.json', function(err, stats){
-        expect(stats).to.be.undefined;
         done();
       });
     });
@@ -1236,8 +1129,6 @@ describe("function run", function(done){
 
   var actionParam;
 
-  
-
   before(function(done){
     this.timeout(64000);
     del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
@@ -1249,7 +1140,7 @@ describe("function run", function(done){
 
   it("function init", function(done){
     this.timeout(64000);
-    var commandFunctionInit = 'bin/backand function init --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --template template';
+    var commandFunctionInit = 'bin/backand function init --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli';
     exec(commandFunctionInit, function(err, stdout, stderr) {
       // test files exist
       fs.readdir('testclifunction', (err, files) => {
@@ -1279,8 +1170,6 @@ describe("function run", function(done){
     });
   });
 
-
-
   it("function run", function(done){
     this.timeout(64000);
     var commandFunctionRun = 'bin/backand function run --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --debug false --params \'{ "r": ' + actionParam  + ' }\'';
@@ -1291,8 +1180,6 @@ describe("function run", function(done){
     });    
   });
 
-
-
   after(function(done){
     this.timeout(64000);
     del.sync(['testclifunction', '*.zip', '.awspublish-nodejs.backand.io', '.backand-credentials.json']);
@@ -1302,7 +1189,6 @@ describe("function run", function(done){
     });
   });
 });
-
 
 describe("object", function(){
 
