@@ -17,8 +17,11 @@ var logger      =     require('../lib/logger');
 var commands    =     require('../lib/commands/commands');
 var command     =     process.argv[2];
 var ROOT        =    __dirname + '/..';
-var backandVersion = fs.readJSONSync(ROOT + '/package.json')['version'];
-var analytics			 = require('../lib/api/analytics');
+var backandVersion  = fs.readJSONSync(ROOT + '/package.json')['version'];
+var analytics			  = require('../lib/api/analytics');
+var tokenStore      = require('../lib/api/token-storage');
+var auth            = require('../lib/api/auth');
+
 
 if(command) {
 
@@ -27,8 +30,27 @@ if(command) {
     return;
   }
 
-  //logger.log(options._.join(' '));
-  analytics.track(null,'cli command',{command: options._.join(' ')});
+  //get user details for tracking
+  try{
+    var email = tokenStore.getCurrentUsername();
+    if(!email){
+      //try to get it from getUserDetails
+      if (options.master && options.user){
+        auth.getUserDetails(options.user, options.master, null).then(function(data){
+          email = data.username;
+          analytics.track(email,'cli command',{command: options._.join(' ')});
+        })
+      } else {
+        analytics.track(null,'cli command',{command: options._.join(' ')});
+      }
+    } else {
+      analytics.track(email,'cli command',{command: options._.join(' ')});
+    }
+
+  }catch(e){
+    //do nothing
+  }
+
   commands.getCommand(command)(options);
 }
 else {
