@@ -377,9 +377,7 @@ describe("function init and deploy", function(done){
         },
         function(err, response, body){
           expect(err).to.be.null;
-          var bodyObj = JSON.parse(body);
-          expect(bodyObj.StatusCode).to.be.equal(200);
-          expect(bodyObj.Payload).to.be.equal('{"message":"Hello World!"}');
+          expect(body).to.be.equal('{"message":"Hello World!"}');
           done();
         }
     );
@@ -406,9 +404,7 @@ describe("function init and deploy", function(done){
           },
           function(err, response, body){
             expect(err).to.be.null;
-            var bodyObj = JSON.parse(body);
-            expect(bodyObj.StatusCode).to.be.equal(200);
-            expect(bodyObj.Payload).to.be.equal('{"message":"Hello ' + r + '!"}');
+            expect(body).to.be.equal('{"message":"Hello ' + r + '!"}');
             done();
           }
       );
@@ -913,9 +909,7 @@ describe("lambda function with signin", function(done){
         	},
         	function(err, response, body){
         		expect(err).to.be.null;
-        		var bodyObj = JSON.parse(body);
-        		expect(bodyObj.StatusCode).to.be.equal(200);
-        		expect(bodyObj.Payload).to.be.equal('{"message":"Hello World!"}');
+        		expect(body).to.be.equal('{"message":"Hello World!"}');
         		done();        	
         	}
         );
@@ -943,9 +937,7 @@ describe("lambda function with signin", function(done){
 	        	},
 	        	function(err, response, body){
 	        		expect(err).to.be.null;
-	        		var bodyObj = JSON.parse(body);
-	        		expect(bodyObj.StatusCode).to.be.equal(200);
-	        		expect(bodyObj.Payload).to.be.equal('{"message":"Hello ' + r + '!"}');
+	        		expect(body).to.be.equal('{"message":"Hello ' + r + '!"}');
 	        		done();        	
 	        	}
 	        );		
@@ -1174,7 +1166,6 @@ describe("function run", function(done){
     this.timeout(64000);
     var commandFunctionRun = 'bin/backand function run --name testclifunction --master b83f5c3d-3ed8-417b-817f-708eeaf6a945 --user 9cf80730-1ab6-11e7-8124-06bcf2b21c8c  --app cli --debug false --params \'{ "r": ' + actionParam  + ' }\'';
     exec(commandFunctionRun, function(err, stdout, stderr) {
-      expect(stdout).to.have.string('"StatusCode": 200');
       expect(stdout).to.have.string("mmm" + actionParam + "MMM");
       done();
     });    
