@@ -8,3 +8,5 @@ backand-*.tgz
 bin/.*
 bin/*.json
 /.*.json
+.backand-credentials
+.awspublish-nodejs.backand.io
